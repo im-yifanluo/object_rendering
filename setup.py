@@ -38,11 +38,6 @@ setup(
         'ROS 2 package for simulated object placement overlays'
     ),
     license='Apache-2.0',
-    extras_require={
-        'test': [
-            'pytest',
-        ],
-    },
     entry_points={
         'console_scripts': [
             'scene_renderer = object_rendering.nodes.scene_renderer_node:main',
