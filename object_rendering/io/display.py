@@ -16,7 +16,7 @@ class OpenCvDisplaySink:
         if not self.enabled:
             return
 
-        cv2.namedWindow(self.window_name, cv2.WINDOW_NORMAL)
+        cv2.namedWindow(self.window_name, cv2.WINDOW_AUTOSIZE)
         self.started = True
 
     def show(self, bgr_image: np.ndarray) -> bool:
@@ -29,7 +29,18 @@ class OpenCvDisplaySink:
         cv2.imshow(self.window_name, bgr_image)
 
         key = cv2.waitKey(1) & 0xFF
-        return key not in (ord("q"), 27)
+        if key in (ord("q"), 27):
+            return False
+
+        try:
+            visible = cv2.getWindowProperty(
+                self.window_name,
+                cv2.WND_PROP_VISIBLE,
+            )
+        except cv2.error:
+            visible = 0
+
+        return visible >= 1
 
     def close(self) -> None:
         if self.enabled and self.started:

@@ -187,6 +187,7 @@ class SceneRendererNode(Node):
                 self.logged_missing_tag = True
             return cv_image
 
+        tag_was_missing = self.logged_missing_tag
         self.logged_missing_tag = False
 
         projection_matrix = compute_projection_matrix(
@@ -209,6 +210,13 @@ class SceneRendererNode(Node):
         )
 
         overlay_bgr = overlay_rgba_on_bgr(cv_image, rendered_rgba)
+
+        if tag_was_missing and self.logged_first_tag:
+            self.get_logger().info(
+                f"AprilTag detected again: id={detection.tag_id}, "
+                f"translation={detection.translation.tolist()}, "
+                f"decision_margin={detection.decision_margin}"
+            )
 
         if not self.logged_first_tag:
             self.get_logger().info(
